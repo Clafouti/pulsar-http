@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pulsar | an HTTP framework</title>
+    <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #000000;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .text {
+            font-family: sans-serif;
+            font-size: 10em;
+            display: flex;
+            gap: 0.1em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .text svg {
+            width: 1em;
+            height: 1em;
+            fill: rgba(255, 255, 255, 0);
+            stroke: rgba(255, 255, 255, 0.3);
+            stroke-width: 2px;
+            stroke-dasharray: 80;
+            stroke-dashoffset: 80;
+            animation: draw 4s ease-in-out forwards, glow 4s ease-in-out forwards;
+        }
+
+        @keyframes draw {
+            0% {
+                stroke-dashoffset: 50;
+            }
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        @keyframes glow {
+            0% {
+                stroke: rgba(255, 255, 255, 0);
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0);
+            }
+            100% {
+                stroke: rgba(255, 255, 255, 1);
+                text-shadow: 0 0 10px rgba(255, 255, 255, 1);
+            }
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: twinkle 10s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: 0.1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<div>
+    <div class="text" id="text">
+        <svg><text x="50%" y="50%" text-anchor="middle" dy=".35em">P</text></svg>
+        <svg><text x="50%" y="50%" text-anchor="middle" dy=".35em">U</text></svg>
+        <svg><text x="50%" y="50%" text-anchor="middle" dy=".35em">L</text></svg>
+        <svg><text x="50%" y="50%" text-anchor="middle" dy=".35em">S</text></svg>
+        <svg><text x="50%" y="50%" text-anchor="middle" dy=".35em">A</text></svg>
+        <svg><text x="50%" y="50%" text-anchor="middle" dy=".35em">R</text></svg>
+    </div>
+</div>
+
+<script>
+    const starContainer = document.getElementById('stars');
+    const starCount = 200;
+    const starSizeMin = 1;
+    const starSizeMax = 3;
+
+    for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+
+        const size = Math.random() * (starSizeMax - starSizeMin) + starSizeMin;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+        star.style.left = `${Math.random() * 100}vw`;
+        star.style.top = `${Math.random() * 100}vh`;
+        star.style.opacity = Math.random().toString();
+        star.style.animationDuration = `${Math.random() * 10 + 5}s`;
+        star.style.boxShadow = `0 0 ${Math.random() * 10 + 5}px white`;
+
+        starContainer.appendChild(star);
+    }
+</script>
+
+</body>
+</html>
