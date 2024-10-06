@@ -1,0 +1,14 @@
+{
+  "name": "pulsar-http-example",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "pulsar-http": "^1.0.10"
+  }
+}

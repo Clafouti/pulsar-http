@@ -1,6 +1,5 @@
-import { error404, file, json } from "response";
+import { error404, file, json, type RouterHandler } from "pulsar-http";
 import { faker } from "@faker-js/faker";
-import type { RouterHandler } from "types";
 
 let fakeUsers = Array.from({ length: 10 }, () => {
   return {

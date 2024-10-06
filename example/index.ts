@@ -1,7 +1,4 @@
-import { get, post } from "router";
-import { start } from "server";
-
-import type { Middleware } from "types";
+import { start, get, post, type Middleware } from "pulsar-http";
 
 import {
   handleHome,
