@@ -17,9 +17,32 @@ $ bun add pulsar-http
 ```
 
 ### Usage
-See the example directory.
+Create a new file named `index.ts` and add the following code.
+```typescript
+import { start, get, json } from "pulsar-http";
 
-### Run
+const routes = [
+    get(routePaths.home, async () => json({ message: "Hello, World!" })),
+];
+
+start(routes, [], {
+    port: 3000,
+    workers: 4,
+});
+```
+
+Run the following command to start the server.
 ```bash
 $ bun --watch index.ts
 ```
+
+### Try it out
+Fetch the example directory from the repository and run the following commands.
+
+```bash
+$ docker build -t pulsar_pg .
+$ docker run -d -p 5432:5432 --name pulsar_pg_container pulsar_pg
+$ bun start
+```
+
+
