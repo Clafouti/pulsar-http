@@ -22,7 +22,7 @@ Create a new file named `index.ts` and add the following code.
 import { start, get, json } from "pulsar-http";
 
 const routes = [
-    get(routePaths.home, async () => json({ message: "Hello, World!" })),
+    get('/', async () => json({ message: "Hello, World!" })),
 ];
 
 start(routes, [], {
