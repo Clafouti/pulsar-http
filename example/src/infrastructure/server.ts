@@ -13,9 +13,14 @@ const routePaths = {
 
 const routes = [
   get(routePaths.home, async () => file("/public/hello-world.html")),
-  get(routePaths.users, handleGetUsers),
-  get(routePaths.user, handleGetUser),
-  post(routePaths.users, handleCreateUser),
+  {
+    path: "/api/v1",
+    routes: [
+      get(routePaths.users, handleGetUsers),
+      get(routePaths.user, handleGetUser),
+      post(routePaths.users, handleCreateUser),
+    ],
+  },
 ];
 
 const middlewares: Middleware[] = [

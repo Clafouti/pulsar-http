@@ -13,7 +13,7 @@ It is designed to accelerate the development of web applications and web service
 
 ### Installation
 ```bash
-$ bun add pulsar-http
+bun add pulsar-http
 ```
 
 ### Usage
@@ -33,16 +33,16 @@ start(routes, [], {
 
 Run the following command to start the server.
 ```bash
-$ bun --watch index.ts
+bun --watch index.ts
 ```
 
 ### Try it out
 Fetch the example directory from the repository and run the following commands.
 
 ```bash
-$ docker build -t pulsar_pg .
-$ docker run -d -p 5432:5432 --name pulsar_pg_container pulsar_pg
-$ bun start
+docker build -t pulsar_pg .
+docker run -d -p 5432:5432 --name pulsar_pg_container pulsar_pg
+bun start
 ```
 
 

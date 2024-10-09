@@ -1,15 +1,8 @@
-# pulsar-http-example
-
-To install dependencies:
-
-```bash
-bun install
-```
-
-To run:
+### Try it out
+Fetch the example directory from the repository and run the following commands.
 
 ```bash
-bun run index.ts
+docker build -t pulsar_pg .
+docker run -d -p 5432:5432 --name pulsar_pg_container pulsar_pg
+bun start
 ```
-
-This project was created using `bun init` in bun v1.1.29. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
