@@ -6,7 +6,7 @@ Pulsar is a lightweight, high-performance, non-blocking HTTP server engine writt
 
 It is designed to accelerate the development of web applications and web services.
 
-### Features (1.0.10)
+### Features
 - Asynchronous request handling
 - Routing with groups and parameters
 - Middleware composition

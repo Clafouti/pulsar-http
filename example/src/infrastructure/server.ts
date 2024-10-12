@@ -1,3 +1,4 @@
+import { createGzip } from "zlib";
 import { start, get, post, type Middleware, file, log } from "pulsar-http";
 import {
   handleGetUser,
