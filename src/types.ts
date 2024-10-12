@@ -18,8 +18,8 @@ export type RouteNamespace = {
 
 export type Middleware = (
   req: Request,
-  next: () => Promise<Response | undefined | void>,
-) => Promise<Response | undefined | void>;
+  next: () => Promise<Response>,
+) => Promise<Response>;
 
 export type RequestQueueItem = {
   request: Request;

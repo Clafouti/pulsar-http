@@ -1,18 +1,25 @@
+import { log } from "./logger";
+import { error } from "./response";
 import { router } from "./router";
 import { createQueue } from "./queue";
-import { getResponseLog, log } from "./logger";
 import type { Middleware, Route, RouteNamespace } from "./types";
 
-const composeMiddleware = (middlewares: Middleware[]) => {
-  return async (req: Request): Promise<Response | void> => {
+const composeMiddleware = (
+  middlewares: Middleware[],
+  routeHandler: (req: Request) => Promise<Response>,
+) => {
+  return async (req: Request): Promise<Response> => {
     let i = 0;
 
-    const next = async (): Promise<Response | void> => {
-      if (i >= middlewares.length) {
-        return;
+    const next = async (): Promise<Response> => {
+      if (i < middlewares.length) {
+        const response = await middlewares[i++](req, next);
+        if (response) {
+          return response;
+        }
       }
 
-      return middlewares[i++](req, next);
+      return routeHandler(req);
     };
 
     return next();
@@ -34,42 +41,27 @@ const getRoutes = (elements: (Route | RouteNamespace)[]): Route[] => {
 
 const requestQueue = createQueue();
 
-const workerLoop = async (
-  identity: number,
-  middlewares: Middleware[],
-  routes: Route[],
-) => {
+const workerLoop = async (middlewares: Middleware[], routes: Route[]) => {
   while (true) {
     if (!requestQueue.isEmpty()) {
       const item = requestQueue.dequeue();
 
       if (item) {
         const { request, resolve } = item;
-        const url = new URL(request.url);
 
         try {
-          const middlewareHandlers = composeMiddleware(middlewares);
           const routeHandler = await router(routes);
+          const composedHandlers = composeMiddleware(middlewares, routeHandler);
 
-          const middlewareResponse = await middlewareHandlers(request);
+          let response = await composedHandlers(request);
 
-          const logResponse = (response: Response) => {
-            log(
-              `${request.method} ${url.pathname} ${getResponseLog(response)}`,
-            );
-          };
-
-          if (middlewareResponse) {
-            logResponse(middlewareResponse);
-            resolve(middlewareResponse);
-          } else {
-            const response = await routeHandler(request);
-            logResponse(response);
-            resolve(response);
+          if (!response) {
+            response = error(404);
           }
-        } catch (error) {
-          log(`Worker ${identity} failed with error: ${error}`);
-          resolve(new Response(`Internal Server Error`, { status: 500 }));
+
+          resolve(response);
+        } catch (e) {
+          resolve(error(500));
         }
       }
     } else {
@@ -84,7 +76,7 @@ const startWorkers = (
   routes: Route[],
 ) => {
   for (let i = 0; i < amount; i++) {
-    void workerLoop(i + 1, middlewares, routes);
+    void workerLoop(middlewares, routes);
   }
 };
 
@@ -95,30 +87,14 @@ export const start = (
 ) => {
   const routes = getRoutes(routingElements);
 
-  startWorkers(options?.workers, middlewares, routes);
+  startWorkers(options?.workers ?? 4, middlewares, routes);
 
   Bun.serve({
     port: options?.port ?? 3000,
+
     async fetch(req) {
-      const responsePromise = new Promise<Response>((resolve) => {
+      return new Promise<Response>((resolve) => {
         requestQueue.enqueue({ request: req, resolve });
-      });
-
-      // @ts-ignore
-      return new Response(async function* () {
-        const response = await responsePromise;
-
-        if (response.body) {
-          const reader = response.body.getReader();
-          let readResult = await reader.read();
-
-          while (!readResult.done) {
-            yield readResult.value;
-            readResult = await reader.read();
-          }
-        } else {
-          yield response.statusText;
-        }
       });
     },
   });
